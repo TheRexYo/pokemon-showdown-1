@@ -54,7 +54,7 @@ export class Roomlog {
 	 * Scrollback log
 	 */
 	log: string[];
-	broadcastBuffer: string;
+	broadcastBuffer: string[];
 	/**
 	 * undefined = uninitialized,
 	 * null = disabled
@@ -67,7 +67,7 @@ export class Roomlog {
 	roomlogStream?: Streams.WriteStream | null;
 	sharedModlog: boolean;
 	roomlogFilename: string;
-	constructor(room: BasicChatRoom, options: RoomlogOptions = {}) {
+	constructor(room: BasicRoom, options: RoomlogOptions = {}) {
 		this.roomid = room.roomid;
 
 		this.isMultichannel = !!options.isMultichannel;
@@ -75,7 +75,7 @@ export class Roomlog {
 		this.noLogTimes = !!options.noLogTimes;
 
 		this.log = [];
-		this.broadcastBuffer = '';
+		this.broadcastBuffer = [];
 
 		this.modlogStream = undefined;
 		this.roomlogStream = undefined;
@@ -166,7 +166,7 @@ export class Roomlog {
 		this.roomlog(message);
 		message = this.withTimestamp(message);
 		this.log.push(message);
-		this.broadcastBuffer += message + '\n';
+		this.broadcastBuffer.push(message);
 		return this;
 	}
 	private withTimestamp(message: string) {
@@ -220,7 +220,7 @@ export class Roomlog {
 				break;
 			}
 		}
-		this.broadcastBuffer += fullMessage + '\n';
+		this.broadcastBuffer.push(fullMessage);
 	}
 	attributedUhtmlchange(user: User, name: string, message: string) {
 		const start = `/uhtmlchange ${name},`;
@@ -231,7 +231,7 @@ export class Roomlog {
 				break;
 			}
 		}
-		this.broadcastBuffer += fullMessage + '\n';
+		this.broadcastBuffer.push(fullMessage);
 	}
 	private parseChatLine(line: string) {
 		const messageStart = !this.noLogTimes ? '|c:|' : '|c|';
@@ -329,7 +329,7 @@ const sharedModlogs = new Map<string, Streams.WriteStream>();
 
 const roomlogs = new Map<string, Roomlog>();
 
-function createRoomlog(room: BasicChatRoom, options = {}) {
+function createRoomlog(room: BasicRoom, options = {}) {
 	let roomlog = Roomlogs.roomlogs.get(room.roomid);
 	if (roomlog) throw new Error(`Roomlog ${room.roomid} already exists`);
 
