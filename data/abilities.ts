@@ -4074,13 +4074,13 @@ export const BattleAbilities: {[abilityid: string]: AbilityData} = {
 		num: 221,
 	},
 	technician: {
-		desc: "This Pokemon's moves of 60 power or less have their power multiplied by 1.5. Does affect Struggle.",
-		shortDesc: "This Pokemon's moves of 60 power or less have 1.5x power. Includes Struggle.",
+		desc: "This Pokemon's moves of 70 power or less have their power multiplied by 1.5. Does affect Struggle.",
+		shortDesc: "This Pokemon's moves of 70 power or less have 1.5x power. Includes Struggle.",
 		onBasePowerPriority: 30,
 		onBasePower(basePower, attacker, defender, move) {
 			const basePowerAfterMultiplier = this.modify(basePower, this.event.modifier);
 			this.debug('Base Power: ' + basePowerAfterMultiplier);
-			if (basePowerAfterMultiplier <= 60) {
+			if (basePowerAfterMultiplier <= 70) {
 				this.debug('Technician boost');
 				return this.chainModify(1.5);
 			}
